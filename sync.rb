@@ -16,6 +16,6 @@ post '/notify' do
    repo_dir = CONFIG["repo_dir"]
    this_repo = repo_dir + "/" +  payload["repository"]["name"]
    repo = Git.open(this_repo, :log => Logger.new(STDOUT))
-   out = repo.pull
+   out = repo.fetch
    puts out
 end
