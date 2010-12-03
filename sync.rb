@@ -1,9 +1,7 @@
 require 'rubygems'
 require 'sinatra'
 require 'json/pure'
-require 'git'
 require 'yaml'
-require 'logger'
 
 CONFIG = YAML::load_file("config.yml") unless defined? CONFIG
 
@@ -15,7 +13,11 @@ post '/notify' do
    payload = JSON.parse(params[:payload])
    repo_dir = CONFIG["repo_dir"]
    this_repo = repo_dir + "/" +  payload["repository"]["name"]
-   repo = Git.open(this_repo, :log => Logger.new(STDOUT))
-   out = repo.fetch
-   puts out
+   ref = payload["ref"].split("/").last
+   if ref == "master"
+     cmd = "pushd #{this_repo}; git fetch origin; git checkout master; git pull origin; popd"
+   else
+     cmd = "pushd #{this_repo}; git fetch origin; git checkout master; git branch -f #{ref} origin/#{ref}; popd"
+   end
+   system cmd
 end
