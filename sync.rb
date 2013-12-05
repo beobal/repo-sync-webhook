@@ -21,3 +21,6 @@ post '/notify' do
    end
    system cmd
 end
+
+# cd $PROJECT
+# git fetch git@github.com:talis/$PROJECT.git '+refs/heads/*:refs/heads/*'
